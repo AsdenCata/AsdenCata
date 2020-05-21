@@ -7,22 +7,48 @@
 //
 
 import UIKit
+import MapKit
 
-class StartRunningVC: UIViewController {
+class StartRunningVC: LocationVC { //inherit everithing from LocationVC
+    
+    @IBOutlet weak var mapView: MKMapView!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        checkLocationAuthStatus()
+        mapView.delegate = self
     }
-
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        manager?.delegate = self
+        manager?.startUpdatingLocation()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        manager?.stopUpdatingLocation()
+    }
+    
+    @IBAction func locationCenterBtnPressed(_ sender: Any) {
+    }
+    
     @IBAction func startRunningBtnPressed(_ sender: Any) {
-        //how to present a new VC on top of tabBarController
-//        guard let onRun = storyboard?.instantiateViewController(identifier: "OnRunVC") as? OnRunVC else { return }
-//        self.definesPresentationContext = true
-//        onRun.modalPresentationStyle = .currentContext
-//        self.present(onRun, animated: true, completion: nil)
-     
+        guard let onRun = storyboard?.instantiateViewController(identifier: "OnRunVC") as? OnRunVC else { return }
+        present(onRun, animated: true, completion: nil)
+
     }
     
 }
 
+extension StartRunningVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse || status == .authorizedAlways { //it is mandatory to check if user has approved to share location
+            mapView.showsUserLocation = true // to show the user location
+            mapView.userTrackingMode = .follow
+        }
+    }
+    
+}
