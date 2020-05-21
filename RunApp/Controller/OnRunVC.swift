@@ -9,13 +9,39 @@
 import UIKit
 
 class OnRunVC: LocationVC {  //inherit everithing from LocationVC
+    
+    @IBOutlet weak var swipeBackgroundImg: UIImageView!
+    @IBOutlet weak var sliderImg: UIImageView!
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        checkLocationAuthStatus()
-
-        // Do any additional setup after loading the view.
+        let swipeGesture = UIPanGestureRecognizer(target: self, action: #selector(endRunSwiped(sender:)))
+        sliderImg.addGestureRecognizer(swipeGesture)
+        sliderImg.isUserInteractionEnabled = true
+        swipeGesture.delegate = self as? UIGestureRecognizerDelegate
     }
     
-
+    @objc func endRunSwiped(sender: UIPanGestureRecognizer) {
+        let minAdjust: CGFloat = 80 //values are given based on how they look on the screen
+        let maxAdjust: CGFloat = 129
+        if let sliderView = sender.view {
+            if sender.state == UIGestureRecognizer.State.began || sender.state == UIGestureRecognizer.State.changed {
+                let translation = sender.translation(in: self.view) // give us how many points we are adding or substracting from the current location
+                if sliderView.center.x >= (swipeBackgroundImg.center.x - minAdjust) && sliderView.center.x <= (swipeBackgroundImg.center.x + maxAdjust) {
+                    sliderView.center.x = sliderView.center.x + translation.x //seting the center of the slider to move according to the swipeGesture, between the min and max points(Adjust)
+                } else if sliderView.center.x >= (swipeBackgroundImg.center.x + maxAdjust){
+                    sliderView.center.x = swipeBackgroundImg.center.x + maxAdjust //adjust if slider go to far to right from view
+                } else {
+                    sliderView.center.x = swipeBackgroundImg.center.x - minAdjust//adjust if slider go to far to left from view
+                }
+                sender.setTranslation(CGPoint.zero, in: self.view) //set the translation value of the coordonate system in the specifil view
+            }
+            
+        }
+        
+    }
+    
+    
 }
