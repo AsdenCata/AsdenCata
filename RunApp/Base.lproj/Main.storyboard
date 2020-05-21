@@ -96,6 +96,13 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BG" translatesAutoresizingMaskIntoConstraints="NO" id="aiv-Uc-8QJ">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                             </imageView>
+                            <view clipsSubviews="YES" alpha="0.25" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vD4-pv-Y9O">
+                                <rect key="frame" x="0.0" y="194.33333333333337" width="375" height="150"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="G26-dB-9sc"/>
+                                </constraints>
+                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="-6" translatesAutoresizingMaskIntoConstraints="NO" id="rYg-gd-PS1">
                                 <rect key="frame" x="131.33333333333334" y="214.33333333333337" width="112.33333333333334" height="110"/>
                                 <subviews>
@@ -159,13 +166,6 @@
                                 <color key="textColor" red="0.96078431369999995" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view clipsSubviews="YES" alpha="0.25" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vD4-pv-Y9O">
-                                <rect key="frame" x="0.0" y="194.33333333333337" width="375" height="150"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="150" id="G26-dB-9sc"/>
-                                </constraints>
-                            </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="endRunOutline" translatesAutoresizingMaskIntoConstraints="NO" id="hng-ND-mqV">
                                 <rect key="frame" x="46.666666666666657" y="712" width="231.99999999999997" height="75"/>
                             </imageView>
@@ -178,6 +178,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aCs-mb-aNR">
                                 <rect key="frame" x="257" y="712" width="75" height="75"/>
                                 <state key="normal" image="pauseButton"/>
+                                <connections>
+                                    <action selector="pauseBtnPressed:" destination="lTx-Cb-Quh" eventType="touchUpInside" id="8eR-WO-u8i"/>
+                                </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="endRunButton" translatesAutoresizingMaskIntoConstraints="NO" id="zj3-lg-4k7">
                                 <rect key="frame" x="56.666666666666657" y="718.66666666666663" width="62" height="62"/>
@@ -218,6 +221,10 @@
                     <navigationItem key="navigationItem" id="grB-vW-CH2"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="distanceLbl" destination="U4x-zm-Jjw" id="sHP-CO-8fS"/>
+                        <outlet property="durationLbl" destination="H47-4a-1ab" id="e3S-tj-cac"/>
+                        <outlet property="paceLbl" destination="KEm-6m-IEQ" id="Yft-Vt-c32"/>
+                        <outlet property="pauseBtn" destination="aCs-mb-aNR" id="y1F-O3-qYY"/>
                         <outlet property="sliderImg" destination="zj3-lg-4k7" id="e1P-o4-iSG"/>
                         <outlet property="swipeBackgroundImg" destination="hng-ND-mqV" id="7KX-dG-je0"/>
                     </connections>
