@@ -18,3 +18,20 @@ extension Double {
     
 }
 
+extension Int {
+    
+    func formatTimeDurationToString() -> String {
+        let durationHours = self / 3600
+        let durationMinutes = (self % 3600) / 60 //how many times doeas self fit in 3600
+        let durationSeconds = (self % 3600) % 60
+        
+        if durationSeconds < 0 {
+            return "00:00:00"
+        } else {
+            if durationHours == 0 {
+                return String(format: "%02d:%02d", durationMinutes, durationSeconds) //durationMinues is the firs %02d and durationSeconds is the second %02d; , %02d = we always want 2 elemnts / chracters, if we hav eonly one it will put 0 in front ex 01; d is from decimals
+            }
+        }
+        return String(format: "%02d:%02d%02d", durationHours, durationMinutes, durationSeconds)
+    }
+}

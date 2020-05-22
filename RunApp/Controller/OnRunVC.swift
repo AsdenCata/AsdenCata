@@ -21,6 +21,9 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     
     var startLocation: CLLocation!
     var lastLocation: CLLocation!
+    var timer = Timer()
+    var counter = 0
+    
     
     var runDistance = 0.0
     
@@ -47,10 +50,24 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     
     func onRun() {   //update location
         manager?.startUpdatingLocation()
+        startTimer()
     }
     
     func endRun() {
         manager?.stopUpdatingLocation()
+    }
+    
+    func startTimer() {
+        durationLbl.text = counter.formatTimeDurationToString()
+
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCounter), userInfo: nil, repeats: true)
+        
+    }
+    
+    @objc func updateCounter() {
+        counter += 1
+        durationLbl.text = counter.formatTimeDurationToString()
+        
     }
     
     
