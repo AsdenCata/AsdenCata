@@ -22,9 +22,9 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     var startLocation: CLLocation!
     var lastLocation: CLLocation!
     var timer = Timer()
+    
     var counter = 0
-    
-    
+    var pace = 0
     var runDistance = 0.0
     
     
@@ -55,6 +55,11 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     
     func endRun() {
         manager?.stopUpdatingLocation()
+    }
+    
+    func calculatePace(time seconds: Int, km: Double) -> String {
+         pace = Int(Double(seconds) / km)
+        return pace.formatTimeDurationToString()
     }
     
     func startTimer() {
@@ -116,6 +121,9 @@ extension OnRunVC: CLLocationManagerDelegate {
         } else if let location = locations.last { // it means we have started to run, bun paused
             runDistance += lastLocation.distance(from: location)  //setting the runDistance
             distanceLbl.text = "\(runDistance.metersToKm(decimals: 2))"
+            if counter > 0 && runDistance > 0 {
+                paceLbl.text = calculatePace(time: counter, km: runDistance.metersToKm(decimals: 2))
+            }
         }
         lastLocation = locations.last
     }
