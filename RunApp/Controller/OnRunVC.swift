@@ -97,8 +97,8 @@ extension OnRunVC: CLLocationManagerDelegate {
         if startLocation == nil {
             startLocation = locations.first     //we populate var startLocation with the first location
         } else if let location = locations.last { // it means we have started to run, bun paused
-            runDistance = lastLocation.distance(from: location)  //setting the runDistance
-            distanceLbl.text = "\(runDistance)"
+            runDistance += lastLocation.distance(from: location)  //setting the runDistance
+            distanceLbl.text = "\(runDistance.metersToKm(decimals: 2))"
         }
         lastLocation = locations.last
     }
