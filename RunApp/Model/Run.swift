@@ -34,4 +34,11 @@ class Run: Object {
         self.duration = duration
     }
     
+    static func addRunToRealm(pace: Int, dinstance: Double, duration: Int) { //it is static because we only whant one instance of it; so we can call the funciton anywhere by simply writing Run.addRunToRealm (not like when we create DataService.instance.addRunToRealm)
+        do {
+            
+        } catch
+        
+    }
+    
 }

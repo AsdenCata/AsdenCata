@@ -61,7 +61,7 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     
     func endRun() {
         manager?.stopUpdatingLocation()
-        //to do: end our object to Realm
+        Run.addRunToRealm(pace: pace, dinstance: runDistance, duration: counter)
     }
     
     func calculatePace(time seconds: Int, km: Double) -> String {
