@@ -44,17 +44,24 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     }
     
     @IBAction func pauseBtnPressed(_ sender: Any) {
+        if timer.isValid {
+            pauseTimer()
+        } else {
+            onRun()
+        }
         
     }
     
     
     func onRun() {   //update location
+        pauseBtn.setImage(UIImage(named: "pauseButton"), for: .normal)
         manager?.startUpdatingLocation()
         startTimer()
     }
     
     func endRun() {
         manager?.stopUpdatingLocation()
+        //to do: end our object to Realm
     }
     
     func calculatePace(time seconds: Int, km: Double) -> String {
@@ -64,9 +71,15 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     
     func startTimer() {
         durationLbl.text = counter.formatTimeDurationToString()
-
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCounter), userInfo: nil, repeats: true)
-        
+    }
+    
+    func pauseTimer() {
+        startLocation = nil
+        lastLocation = nil
+        timer.invalidate() //timer will stop
+        manager?.stopUpdatingLocation()
+        pauseBtn.setImage(UIImage(named: "resumeButton"), for: .normal)
     }
     
     @objc func updateCounter() {
@@ -86,8 +99,7 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
                     sliderView.center.x = sliderView.center.x + translation.x //seting the center of the slider to move according to the swipeGesture, between the min and max points(Adjust
                 } else if sliderView.center.x >= (swipeBackgroundImg.center.x + maxAdjust){
                     sliderView.center.x = swipeBackgroundImg.center.x + maxAdjust //adjust if slider got to far to right from view
-                    // TO DO: end running code goes here
-                    
+                    endRun()
                     dismiss(animated: true, completion: nil)
                 } else {
                     sliderView.center.x = swipeBackgroundImg.center.x - minAdjust    //adjust if slider go to far to left from view
