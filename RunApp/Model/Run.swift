@@ -11,11 +11,11 @@ import RealmSwift
 
 class Run: Object {
     
-    dynamic public private(set) var id = ""
-    dynamic public private(set) var date = NSDate()
-    dynamic public private(set) var pace = 0
-    dynamic public private(set) var distance = 0.0
-    dynamic public private(set) var duration = 0
+    @objc dynamic public private(set) var id = ""
+    @objc dynamic public private(set) var date = NSDate()
+    @objc dynamic public private(set) var pace = 0
+    @objc dynamic public private(set) var distance = 0.0
+    @objc dynamic public private(set) var duration = 0
     
     override class func primaryKey() -> String { //specify the name of the property to be used as the primary key
         return "id"
@@ -27,18 +27,38 @@ class Run: Object {
     
     convenience init(pace: Int, distance: Double, duration: Int) {
         self.init()
-        self.id = UUID().uuidString //get a unique generic id
+        self.id = UUID().uuidString.lowercased() //get a unique generic id
         self.date = NSDate()  //set the current date when the object is created
         self.pace = pace
         self.distance = distance
         self.duration = duration
     }
     
-    static func addRunToRealm(pace: Int, dinstance: Double, duration: Int) { //it is static because we only whant one instance of it; so we can call the funciton anywhere by simply writing Run.addRunToRealm (not like when we create DataService.instance.addRunToRealm)
+    static func addRunToRealm(pace: Int, distance: Double, duration: Int) { //it is static because we only whant one instance of it; so we can call the funciton anywhere by simply writing Run.addRunToRealm (not like when we create DataService.instance.addRunToRealm)
+        REALM_QUEUE.sync {
+            let run = Run(pace: pace, distance: distance, duration: duration)
+            do {
+                let realm = try Realm()
+                try realm.write {
+                    realm.add(run)
+                    try realm.commitWrite() //not 100% you need this but is safer to have it
+                }
+            } catch {
+                debugPrint("Error adding run to Realm")
+            }
+        }
+    }
+    
+    static func getAllRuns() -> Results<Run>? {
         do {
+            let realm = try Realm()
+            var runs = realm.objects(Run.self)
+            runs = runs.sorted(byKeyPath: "date", ascending: false) //last run will show first
             
-        } catch
-        
+            return runs
+        } catch {
+            return nil
+        }
     }
     
 }

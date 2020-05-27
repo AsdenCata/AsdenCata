@@ -18,6 +18,7 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
         super.viewDidLoad()
         checkLocationAuthStatus()
         mapView.delegate = self
+       
     }
     
     
@@ -36,9 +37,8 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
     }
     
     @IBAction func startRunningBtnPressed(_ sender: Any) {
-        guard let onRun = storyboard?.instantiateViewController(identifier: "OnRunVC") as? OnRunVC else { return }
+        guard let onRun = storyboard?.instantiateViewController(withIdentifier: "OnRunVC") as? OnRunVC else { return }
         present(onRun, animated: true, completion: nil)
-
     }
     
 }
