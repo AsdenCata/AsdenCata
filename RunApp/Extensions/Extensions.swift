@@ -35,3 +35,14 @@ extension Int {
         return String(format: "%02d:%02d%02d", durationHours, durationMinutes, durationSeconds)
     }
 }
+
+extension NSDate {
+    func dateString() -> String {
+        let calendar = Calendar.current
+        let month = calendar.component(.month, from: self as Date )
+        let day = calendar.component(.day, from: self as Date)
+        let year = calendar.component(.year, from: self as Date)
+        
+        return "\(day)/\(month)/\(year)"
+    }
+}
