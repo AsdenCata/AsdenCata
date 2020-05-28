@@ -11,8 +11,8 @@ import RealmSwift
 
 class Location: Object {
     
-    @objc public private(set) var latitude = 0.0
-    @objc public private(set) var longitude = 0.0
+    @objc public dynamic var latitude = 0.0
+    @objc public dynamic var longitude = 0.0
     
     
     convenience init (latitude: Double, longitude: Double) {
