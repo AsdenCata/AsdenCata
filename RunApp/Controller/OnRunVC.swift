@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import RealmSwift
 
 class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     
@@ -19,13 +20,14 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     @IBOutlet weak var pauseBtn: UIButton!
     
     
-    var startLocation: CLLocation!
-    var lastLocation: CLLocation!
-    var timer = Timer()
+   private var startLocation: CLLocation!
+   private var lastLocation: CLLocation!
+   private var timer = Timer()
     
-    var counter = 0
-    var pace = 0
-    var runDistance = 0.0
+   private var counter = 0
+   private var pace = 0
+   private var runDistance = 0.0
+   private var coordinateLocations = List<Location>()
     
     
     override func viewDidLoad() {
@@ -61,7 +63,7 @@ class OnRunVC: LocationVC {  //inherit everithing from LocationVC
     
     func endRun() {
         manager?.stopUpdatingLocation() 
-        Run.addRunToRealm(pace: pace, distance: runDistance, duration: counter)
+        Run.addRunToRealm(pace: pace, distance: runDistance, duration: counter, locations: coordinateLocations)
     }
     
     func calculatePace(time seconds: Int, km: Double) -> String {
@@ -132,6 +134,8 @@ extension OnRunVC: CLLocationManagerDelegate {
             startLocation = locations.first     //we populate var startLocation with the first location
         } else if let location = locations.last { // it means we have started to run, bun paused
             runDistance += lastLocation.distance(from: location)  //setting the runDistance
+            let newLocation = Location(latitude: Double(lastLocation.coordinate.latitude), longitude: Double(lastLocation.coordinate.longitude))
+            coordinateLocations.insert(newLocation, at: 0) //inserting new locaiton to 0 as Lists (from realm) are ordered as arrays
             distanceLbl.text = "\(runDistance.metersToKm(decimals: 2))"
             if counter > 0 && runDistance > 0 {
                 paceLbl.text = calculatePace(time: counter, km: runDistance.metersToKm(decimals: 2))

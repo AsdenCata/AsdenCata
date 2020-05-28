@@ -16,6 +16,7 @@ class Run: Object {
     @objc dynamic public private(set) var pace = 0
     @objc dynamic public private(set) var distance = 0.0
     @objc dynamic public private(set) var duration = 0
+    public private(set) var locations = List<Location>()
     
     override class func primaryKey() -> String { //specify the name of the property to be used as the primary key
         return "id"
@@ -25,18 +26,19 @@ class Run: Object {
         return ["pace", "date", "duration"]
     }
     
-    convenience init(pace: Int, distance: Double, duration: Int) {
+    convenience init(pace: Int, distance: Double, duration: Int, locations: List<Location>) {
         self.init()
         self.id = UUID().uuidString.lowercased() //get a unique generic id
         self.date = NSDate()  //set the current date when the object is created
         self.pace = pace
         self.distance = distance
         self.duration = duration
+        self.locations = locations
     }
     
-    static func addRunToRealm(pace: Int, distance: Double, duration: Int) { //it is static because we only whant one instance of it; so we can call the funciton anywhere by simply writing Run.addRunToRealm (not like when we create DataService.instance.addRunToRealm)
+    static func addRunToRealm(pace: Int, distance: Double, duration: Int, locations: List<Location>) { //it is static because we only whant one instance of it; so we can call the funciton anywhere by simply writing Run.addRunToRealm (not like when we create DataService.instance.addRunToRealm)
         REALM_QUEUE.sync {
-            let run = Run(pace: pace, distance: distance, duration: duration)
+            let run = Run(pace: pace, distance: distance, duration: duration, locations: locations)
             do {
                 let realm = try Realm()
                 try realm.write {
