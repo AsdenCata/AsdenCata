@@ -13,12 +13,19 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
     
     @IBOutlet weak var mapView: MKMapView!
     
-
+    @IBOutlet weak var lastRunCLoseBtn: UIButton!
+    @IBOutlet weak var paceLbl: UILabel!
+    @IBOutlet weak var distanceLbl: UILabel!
+    @IBOutlet weak var durationLbl: UILabel!
+    @IBOutlet weak var lastRunView: UIView!
+    @IBOutlet weak var lastRunStackView: UIStackView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         checkLocationAuthStatus()
         mapView.delegate = self
-       
+        
     }
     
     
@@ -26,11 +33,18 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
         super.viewWillAppear(animated)
         manager?.delegate = self
         manager?.startUpdatingLocation()
+        getLastRun()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         manager?.stopUpdatingLocation()
+    }
+    
+    @IBAction func lastRunCloseBtnPressed(_ sender: Any) {
+        lastRunView.isHidden = true
+        lastRunStackView.isHidden = true
+        lastRunCLoseBtn.isHidden = true
     }
     
     @IBAction func locationCenterBtnPressed(_ sender: Any) {
@@ -40,6 +54,21 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
         guard let onRun = storyboard?.instantiateViewController(withIdentifier: "OnRunVC") as? OnRunVC else { return }
         present(onRun, animated: true, completion: nil)
     }
+    
+    func getLastRun() {
+        if let lastRun = Run.getAllRuns()?.first {
+            lastRunView.isHidden = false
+            lastRunStackView.isHidden = false
+            lastRunCLoseBtn.isHidden = false
+            paceLbl.text = lastRun.pace.formatTimeDurationToString()
+            distanceLbl.text = "\(lastRun.distance.metersToKm(decimals: 2)) km"
+            durationLbl.text = lastRun.duration.formatTimeDurationToString()
+            
+        } else {
+            lastRunCloseBtnPressed(self)
+        }
+    }
+    
     
 }
 
