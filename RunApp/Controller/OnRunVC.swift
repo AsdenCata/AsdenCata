@@ -132,7 +132,7 @@ extension OnRunVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if startLocation == nil {
             startLocation = locations.first     //we populate var startLocation with the first location
-        } else if let location = locations.last { // it means we have started to run, bun paused
+        } else if let location = locations.last { // it means we have started to run, but paused
             runDistance += lastLocation.distance(from: location)  //setting the runDistance
             let newLocation = Location(latitude: Double(lastLocation.coordinate.latitude), longitude: Double(lastLocation.coordinate.longitude))
             coordinateLocations.insert(newLocation, at: 0) //inserting new locaiton to 0 as Lists (from realm) are ordered as arrays
