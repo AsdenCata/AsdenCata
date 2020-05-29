@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import RealmSwift
 
 class StartRunningVC: LocationVC { //inherit everithing from LocationVC
     
@@ -34,7 +35,7 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
         manager?.delegate = self
         mapView.delegate = self
         manager?.startUpdatingLocation()
-//        setupMapView()
+        //        setupMapView()
         
     }
     
@@ -52,9 +53,13 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
         lastRunView.isHidden = true
         lastRunStackView.isHidden = true
         lastRunCLoseBtn.isHidden = true
+        locationCenterBtnPressed(self)
     }
     
     @IBAction func locationCenterBtnPressed(_ sender: Any) {
+        mapView.userTrackingMode = .follow
+        let coordinateRegion = MKCoordinateRegion.init(center: mapView.userLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.setRegion(coordinateRegion, animated: true)
     }
     
     @IBAction func startRunningBtnPressed(_ sender: Any) {
@@ -62,10 +67,30 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
         present(onRun, animated: true, completion: nil)
     }
     
+    func centerMapOnPreviousRoute(locations: List<Location>) -> MKCoordinateRegion {
+        guard let initialLoc = locations.first else { return MKCoordinateRegion() }
+        var minLat = initialLoc.latitude
+        var minLong = initialLoc.longitude
+        var maxLat = minLat      //just setting an initial value
+        var maxLong = minLong
+        
+        for location in locations {
+            minLat = min(minLat, location.latitude)
+            minLong = min(minLong, location.longitude)
+            maxLat = max(maxLat, location.longitude)
+            maxLong = max(maxLong, location.longitude)
+        }
+        
+        
+        
+        return MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLong + maxLong) / 2), span: MKCoordinateSpan(latitudeDelta: (maxLat-minLat)*3, longitudeDelta: (maxLong-minLong)*3)) //center: minLat+MaxLat/2 shows middle of Lat; span: set the zoom level to the map
+    }
+    
     func setupMapView() {
         if let overlay = addLastRunToMap() { //check if we have a last run
             if mapView.overlays.count > 0 { //check if our map already has a overlay, as we wish to show only the last one
                 mapView.removeOverlays(mapView.overlays)
+                mapView.userTrackingMode = .follow
             }
             mapView.addOverlay(overlay)  //adding last run on the map
             lastRunView.isHidden = false
@@ -89,6 +114,10 @@ class StartRunningVC: LocationVC { //inherit everithing from LocationVC
             coordinate.append(CLLocationCoordinate2D(latitude: loc.latitude, longitude: loc.longitude))
             print("Coordinates: \(coordinate)")
         }
+        
+        mapView.userTrackingMode = .none //turning off traking user when center map to route
+        mapView.setRegion(centerMapOnPreviousRoute(locations:  lastRun.locations), animated: true)
+         
         return MKPolyline(coordinates: coordinate, count: lastRun.locations.count)
     }
 }
@@ -97,7 +126,6 @@ extension StartRunningVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse || status == .authorizedAlways { //it is mandatory to check if user has approved to share location
             mapView.showsUserLocation = true // to show the user location
-            mapView.userTrackingMode = .follow
         }
     }
     
